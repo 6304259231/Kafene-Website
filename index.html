@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B-pharm </title>
+    <link rel="stylesheet" href="Login-page.css">
+</head>
+<body>
+    <nav id="nav">
+        <div id="nav-section">
+            <div class="nav-head">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXxWXtteaW3yPXzHEHdCDkEp3dIkYnULi86A6ce7CL&s" alt="Logo" class="nav-img">
+                <h1 class="nav-head-item"><a href="#">Kafene</a></h1>
+            </div>
+            <div class="orders nav-item" id="orders-link"><a href="Order-listing-page.html">Orders</a> </div>
+            <div class="products nav-item" id="products-link"><a href="products-listing-page.html">Products</a></div>
+            <div class="users nav-item" id="users-link"><a href="Users-listing-page.html">Users</a></div>
+        </div>    
+    </nav>
+    <div id="login-section">
+        <div>
+            <h1 class="sigin-head">Sign in</h1>
+        </div>
+        <form id="login-form">
+            <label for="user-name">Username</label>
+            <input type="text" id="user-name" placeholder="Enter your username">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password">
+            <button type="button" class="btn-login" onclick="validateLogin()">Login</button>
+        </form>
+    </div>
+
+    <script>
+        function validateLogin() {
+            var username = document.getElementById('user-name').value;
+            var password = document.getElementById('password').value;
+
+            if (username === password ) {
+                alert('Login Successful');
+                document.getElementById('login-section').style.display = 'none';
+                localStorage.setItem('isLoggedIn', 'true');
+                window.location.href = 'Order-listing-page.html';
+            } else {
+                alert('Please enter valid credentials!');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn === 'true') {
+                document.getElementById('login-section').style.display = 'none'; 
+                window.location.href = './Order-listing-page.html';
+            }
+        })
+
+    </script>
+</body>
+</html>

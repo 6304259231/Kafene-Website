@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users-listing-page!</title>
+    <style>
+        body{
+    margin: 0px;
+}
+#nav-section a {
+    text-decoration: none;
+}
+#nav-section a:hover{
+    text-decoration-line: underline;
+    text-decoration-thickness: 2px ;
+    text-decoration-color: tomato;
+}
+#nav{
+    position: sticky;
+    top : 0px;
+}
+
+#nav-section{
+    display: flex;
+    flex-wrap: wrap;
+    box-shadow: 2px 3px 10px 0px #888888;
+    background-color: #fff;
+
+    
+}
+#nav-section img{
+    height: 40px;
+    width : 30px;
+    background-color: #fff;
+    box-shadow: 5px 5px 5px 0px #888888;
+}
+.nav-item{
+    margin: 35px 30px;
+    font-size: 18px;
+    font-weight: 550;
+    text-transform: capitalize;
+    font-family: 'Courier New', Courier, monospace;
+    
+
+}
+.nav-head{
+    padding: 15px;
+    margin-left: 20px;
+}
+.nav-head h1{
+    display: inline-block;
+    margin-top: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 700;
+    padding: 0px;
+    margin: 0px;
+    
+}
+        #order-main-section{
+            display: flex;
+            margin: 20px 10px;
+            
+        }
+        #input-checks{
+            display: flex;
+            flex-direction: column;
+
+        }
+        #filter-section{
+            margin: 60px 16px;
+            position: sticky;
+            top : 10px;
+            
+        }
+        .checkbox-item{
+            margin: 10px 8px;
+            height: 20px;
+            
+        }
+        #table-main{
+            margin: 30px 10px;
+            width: 100%;
+            min-width: 100%;
+            border-collapse: collapse;
+            border-radius: 30px;
+            padding: 18px;
+            cursor: pointer;
+    }
+       #table-main tr th,td{
+        padding: 12px;
+        border-bottom: 2px solid #ddd; 
+        margin: 12px 20px;
+       
+    }
+    table th{
+        background-color: #333;
+        color: #fff;
+        position : sticky;
+        top : 90px;
+    }
+    #data-section{
+        width: 90%;
+        margin-left: 5%;
+        margin-right: 40px;
+        
+    }
+    table tr{
+        margin: 12px;
+        box-shadow: 5px 5px 4px 8px #fff;
+        border-radius: 14px;
+        height: 60px;
+        padding-left: 12px;
+    }
+    table .data-item-sep{
+        color: #8c8c8c;
+    }
+
+    table th,tr,td{
+            text-align: left;
+            padding: 12px 24px;
+            font-size: 14px;
+    }
+    #btn-reset{
+        width: 30%;
+        display: inline-block;
+        border-radius: 30px;
+        padding: 14px 36px;
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: 1px;
+        background-color: #20b883;
+        color: #fff;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        margin-top: 24px;
+        margin:auto ;
+    }
+    #users-main-section{
+        width: 50%;
+        margin: 15px 50px;
+    }
+
+    </style>
+</head>
+
+<body>
+    <nav id="nav">
+        <div id="nav-section">
+            <div class="nav-head">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXxWXtteaW3yPXzHEHdCDkEp3dIkYnULi86A6ce7CL&s" alt="Logo" class="nav-img">
+                <h1 class="nav-head-item"><a href="#">Kafene</a></h1>
+            </div>
+            <div class="orders nav-item"><a href="Order-listing-page.html">orders</a> </div>
+            <div class="products nav-item"><a href="products-listing-page.html">produts</a></div>
+            <div class="users nav-item"><a href="Users-listing-page.html">users</a></div>
+        </div>    
+    </nav>
+    <div>
+        <h1 style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;font-size: 40px; margin: 20px 80px;">Users</h1>
+    </div>
+    <div id="users-main-section">
+       <form action="">\
+        <input type="text" name="search-input" id="search-input" style="height: 30px;width: 380px;margin: 20px;text-align: left;" placeholder="Search here">
+        <button id="btn-reset" value="reset">Reset</button>
+       </form>
+    </div> 
+        <hr>   
+        <div id="data-section">
+            <table id="table-main">
+    
+            </table>
+
+        </div>    
+    </div>
+
+    </div>
+
+    <script>
+
+     let table = document.getElementById('table-main');
+     const baseUrl = 'https://5fc1a1c9cb4d020016fe6b07.mockapi.io/api/v1/users';
+     let search = document.getElementById('search-input');
+     let reset = document.getElementById('btn-reset')
+    
+   function fecthData(baseUrl){ 
+    fetch(baseUrl)
+   .then(response =>{
+    return response.json();
+    })
+            .then(data =>{
+              console.log(data);
+              const results = getData(data);
+            })
+            .catch (error =>{
+              console.log("fecthing error" , error)
+          })
+
+        }
+
+          function getData(data){
+            table.innerHTML = '';
+            let tableMainRow = document.createElement('tr')
+            tableMainRow.innerHTML = `<th>Id</th>
+                    <th>User avatar</th>
+                    <th>Full name</th>
+                    <th>D.O.B</th>
+                    <th>Gender</th>
+                    <th>Current Location</th>`
+            table.appendChild(tableMainRow)  
+           for(let i =0;i< data.length;i++){     
+            let tableRow = document.createElement('tr')
+            let tabledata1 = document.createElement('td')
+            tabledata1.innerHTML = data[i].id;
+            tabledata1.classList.add('data-item-sep')
+            let tabledata2 = document.createElement('td')
+            let tabledata2img = document.createElement('img')
+            tabledata2img.src = data[i].profilePic;
+            tabledata2img.classList.add('avatar-img')
+            tabledata2.appendChild(tabledata2img)
+            let tabledata3 = document.createElement('td')
+            tabledata3.innerHTML = data[i].fullName;
+            tabledata3.classList.add('data-item-sep')
+    
+            let tabledata4 = document.createElement('td')
+            tabledata4.innerHTML = data[i].dob;
+        
+            let tabledata5 = document.createElement('td')
+            tabledata5.innerHTML = data[i].gender;
+            tabledata5.classList.add('data-item-sep')
+
+            let tabledata6 = document.createElement('td')
+            tabledata6.innerHTML = data[i].currentCity + ' ' +',' + ' ' + data[i].currentCountry;
+            tabledata6.classList.add('data-item-sep')
+
+            tableRow.appendChild(tabledata1)
+            tableRow.appendChild(tabledata2)
+            tableRow.appendChild(tabledata3)
+           
+            tableRow.appendChild(tabledata4)
+            tableRow.appendChild(tabledata5)
+            tableRow.appendChild(tabledata6)
+           
+
+            table.appendChild(tableRow);
+
+           }
+        }
+
+    search.addEventListener('input', function () {
+        var searchTimer = setTimeout(function () {
+        let userInput = search.value.toLowerCase();
+        if (userInput.length >= 2) {
+            let newUrl = `${baseUrl}?fullName=${userInput}`;
+            fecthData(newUrl);
+        } else {
+            alert('Please enter at least 2 characters for searching');
+        }
+    }, 400); 
+    });
+
+        reset.addEventListener('click', function(){
+            fecthData(baseUrl);
+        })    
+
+       fecthData(baseUrl);
+
+
+   
+
+    </script>
+</body>
+</html>

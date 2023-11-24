@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product-listing-page!</title>
+    <style>
+      body{
+    margin: 0px;
+     }
+     #nav-section a {
+    text-decoration: none;
+}
+#nav-section a:hover{
+    text-decoration-line: underline;
+    text-decoration-thickness: 2px ;
+    text-decoration-color: tomato;
+}
+
+#nav-section{
+    display: flex;
+    flex-wrap: wrap;
+    box-shadow: 2px 3px 10px 0px #888888;
+    background-color: #fff;
+}
+ #nav{
+    position: sticky;
+    top : 0px;
+}
+    
+#nav-section img{
+    height: 40px;
+    width : 30px;
+    background-color: #fff;
+    box-shadow: 5px 5px 5px 0px #888888;
+}
+.nav-item{
+    margin: 35px 30px;
+    font-size: 18px;
+    font-weight: 550;
+    text-transform: capitalize;
+    font-family: 'Courier New', Courier, monospace;
+    
+
+}
+.nav-head{
+    padding: 15px;
+    margin-left: 20px;
+}
+.nav-head h1{
+    display: inline-block;
+    margin-top: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 700;
+    padding: 0px;
+    margin: 0px;
+    
+}
+        #order-main-section{
+            display: flex;
+            margin: 20px 10px;
+            
+        }
+        #input-checks{
+            display: flex;
+            flex-direction: column;
+
+        }
+        #filter-section{
+            margin: 60px 16px;
+            position: sticky;
+            top : 10px;
+            
+        }
+        .checkbox-item{
+            margin: 10px 8px;
+            height: 20px;
+            
+        }
+        #table-main{
+            margin: 30px 10px;
+            width: 100%;
+            min-width: 100%;
+            border-collapse: collapse;
+            border-radius: 30px;
+            padding: 18px;
+            cursor: pointer;
+    }
+       #table-main tr th,td{
+        padding: 12px;
+        border-bottom: 2px solid #ddd; 
+        margin: 12px 20px;
+       
+    }
+    table th{
+        background-color: #333;
+        color: #fff;
+        position : sticky;
+        top : 90px;
+    }
+    #data-section{
+        width: 90%;
+        margin-left: 5%;
+        margin-right: 40px;
+        
+    }
+    table tr{
+        margin: 12px;
+        box-shadow: 5px 5px 4px 8px #fff;
+        border-radius: 14px;
+        height: 60px;
+    }
+    table .data-item-sep{
+        color: #8c8c8c;
+    }
+
+    table th,tr,td{
+            text-align: left;
+            padding: 12px 24px;
+            font-size: 14px;
+    }
+
+    </style>
+</head>
+
+<body>
+  
+    <nav id="nav">
+        <div id="nav-section">
+            <div class="nav-head">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXxWXtteaW3yPXzHEHdCDkEp3dIkYnULi86A6ce7CL&s" alt="Logo" class="nav-img">
+                <h1 class="nav-head-item"><a href="#">Kafene</a></h1>
+            </div>
+            <div class="orders nav-item"><a href="Order-listing-page.html">orders</a> </div>
+            <div class="products nav-item"><a href="products-listing-page.html">produts</a></div>
+            <div class="users nav-item"><a href="Users-listing-page.html">users</a></div>
+        </div>    
+    </nav>
+    <div>
+        <h1 style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;font-size: 40px; margin: 20px 80px;">Total Products</h1>
+    </div>
+    <div id="order-main-section">
+        <div id="filter-section">
+            <h2 style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;font-size: 20px; margin: 20px 80px;">Filters</h2>
+            <p id="count-display-tag">Counts :  <span id="count-display">0</span></p></p>
+            <div id="input-checks">
+                <div class="checkbox-item">
+                        <input type="checkbox" id="expired-checkbox">
+                        <label for="expired-checkbox">Expired</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="lowstock-checkbox">
+                    <label for="lowstock-checkbox" style="margin-right: 40px; text-align: center;">Low Stock</label>
+                </div>
+            </div>
+        </div> 
+        <hr>   
+        <div id="data-section">
+            <table id="table-main">
+
+            </table>
+
+        </div>    
+    </div>
+    </div>
+
+    <script>
+        let table = document.getElementById('table-main');
+        const url = 'https://5fc1a1c9cb4d020016fe6b07.mockapi.io/api/v1/products';
+    
+        let expiredCheckbox = document.getElementById('expired-checkbox');
+        let lowStockCheckbox = document.getElementById('lowstock-checkbox');
+        let countDisplay = document.getElementById('count-display');
+    
+        let filters = {
+            expired: false,
+            lowStock: false
+        };
+    
+        fetch(url)
+            .then(response => response.json())
+            .then(dataResponse => {
+                let data = dataResponse;
+    
+                expiredCheckbox.addEventListener('change', function () {
+                    filters.expired = expiredCheckbox.checked;
+                    updateDataAndCount(data);
+                });
+    
+                lowStockCheckbox.addEventListener('change', function () {
+                    filters.lowStock = lowStockCheckbox.checked;
+                    updateDataAndCount(data);
+                });
+    
+                console.log(data);
+                updateDataAndCount(data);
+            })
+            .catch(error => {
+                console.log("fetching error", error);
+            });
+    
+            function filterData(data) {
+                const currentDate = new Date();
+                return data.filter(item => {
+                    const expirationDate = new Date(Date.parse(item.expiryDate));
+                    return (
+                        (!filters.expired || (filters.expired && expirationDate < new Date('2023-01-01'))) &&
+                        (!filters.lowStock || (filters.lowStock && item.stock < 150))
+                    );
+                });
+            }
+
+    
+        function updateDataAndCount(data) {
+            let filteredData = filterData(data);
+            updateCount(filteredData);
+            updateTable(filteredData);
+        }
+    
+        function updateTable(filteredData) {
+            table.innerHTML = '';
+    
+            let tableMainRow = document.createElement('tr');
+            tableMainRow.innerHTML = `<th>Id</th>
+                <th>Priduct Name</th>
+                <th> Product Brand</th>
+                <th>Expiry Date!</th>
+                <th>Unit Price $</th>
+                <th>Stock</th>`;
+            table.appendChild(tableMainRow);
+    
+            for (let i = 0; i < filteredData.length; i++) {
+                let tableRow = document.createElement('tr');
+                let tabledata1 = document.createElement('td');
+                tabledata1.innerHTML = filteredData[i].id;
+                tabledata1.classList.add('data-item-sep');
+                let tabledata2 = document.createElement('td');
+                tabledata2.innerHTML = filteredData[i].medicineName;
+                let tabledata3 = document.createElement('td');
+                tabledata3.innerHTML = filteredData[i].medicineBrand;
+                tabledata3.classList.add('data-item-sep');
+    
+                let tabledata4 = document.createElement('td');
+                tabledata4.innerHTML = filteredData[i].expiryDate;
+    
+                let tabledata5 = document.createElement('td');
+                tabledata5.innerHTML = filteredData[i].unitPrice;
+                tabledata5.classList.add('data-item-sep');
+    
+                let tabledata6 = document.createElement('td');
+                tabledata6.innerHTML = filteredData[i].stock;
+                tabledata6.classList.add('data-item-sep');
+    
+                tableRow.appendChild(tabledata1);
+                tableRow.appendChild(tabledata2);
+                tableRow.appendChild(tabledata3);
+                tableRow.appendChild(tabledata4);
+                tableRow.appendChild(tabledata5);
+                tableRow.appendChild(tabledata6);
+    
+                table.appendChild(tableRow);
+            }
+        }
+    
+        function updateCount(data) {
+            countDisplay.textContent = `${data.length}`;
+        }
+    </script>
+    
+
+    
+</body>
+</html>

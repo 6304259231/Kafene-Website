@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order-listing-page!</title>
+    <style>
+        body {
+            margin: 0px;
+        }
+        #nav-section a {
+        text-decoration: none;
+    }
+    #nav-section a:hover{
+        text-decoration-line: underline;
+        text-decoration-thickness: 2px ;
+        text-decoration-color: tomato;
+    }
+            #nav{
+            position: sticky;
+            top :0px;  
+            z-index: 10000; 
+        }
+        #nav-section {
+            display: flex;
+            flex-wrap: wrap;
+            box-shadow: 2px 3px 10px 0px #888888;
+            background-color: #fff;
+        }
+
+        #nav-section img {
+            height: 40px;
+            width: 30px;
+            background-color: #fff;
+            box-shadow: 5px 5px 5px 0px #888888;
+        }
+
+        .nav-item {
+            margin: 35px 30px;
+            font-size: 18px;
+            font-weight: 550;
+            text-transform: capitalize;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .nav-head {
+            padding: 15px;
+            margin-left: 20px;
+        }
+
+        .nav-head h1 {
+            display: inline-block;
+            margin-top: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 700;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        #order-main-section {
+            display: flex;
+            margin: 20px 10px;
+        }
+
+        #input-checks {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #filter-section {
+            margin: 40px 25px;
+        }
+
+        .checkbox-item {
+            margin: 10px;
+            height: 15px;
+        }
+
+        #table-main {
+            margin: 30px 10px;
+            width: 100%;
+            min-width: 100%;
+            border-collapse: collapse;
+            border-radius: 30px;
+            padding: 18px;
+            cursor: pointer;
+        }
+
+        #table-main tr th,
+        td {
+            padding: 25px;
+            border-bottom: 2px solid #ddd;
+            margin: 12px 10px;
+        }
+
+        table th {
+            background-color: #333;
+            color: #fff;
+            position: sticky;
+            top: 90px;
+        }
+
+        #data-section {
+            width: 75%;
+            margin-left: 5%;
+            margin-right: 40px;
+        }
+
+        table tr {
+            margin: 12px;
+            box-shadow: 5px 5px 4px 8px #fff;
+            border-radius: 14px;
+            height: 60px;
+        }
+
+        table th,
+        tr,
+        td {
+            text-align: left;
+            padding: 12px 24px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav id="nav">
+        <div id="nav-section">
+            <div class="nav-head">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXxWXtteaW3yPXzHEHdCDkEp3dIkYnULi86A6ce7CL&s"
+                    alt="Logo" class="nav-img">
+                <h1 class="nav-head-item"><a href="#">Kafene</a></h1>
+            </div>
+            <div class="orders nav-item"><a href="Order-listing-page.html">orders</a> </div>
+            <div class="products nav-item"><a href="products-listing-page.html">products</a></div>
+            <div class="users nav-item"><a href="Users-listing-page.html">users</a></div>
+        </div>
+    </nav>
+    <div>
+        <h1 style="font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;font-size: 40px; margin: 20px 80px;">Total Orders</h1>
+    </div>
+    <div id="order-main-section">
+        <div id="filter-section">
+            <h2>Filters</h2>
+            <p>Counts: <span id="count"></span></p>
+            <div id="input-checks">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="new">
+                    <label for="new-checkbox">New</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="packed">
+                    <label for="packed-checkbox">Packed</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="intransit">
+                    <label for="in-transit-checkbox">In transit</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="delivered">
+                    <label for="delivered-checkbox">Delivered</label>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div id="data-section">
+            <table id="table-main">
+
+            </table>
+        </div>
+    </div>
+    <script>
+        let table = document.getElementById('table-main');
+        const url = 'https://5fc1a1c9cb4d020016fe6b07.mockapi.io/api/v1/orders';
+    
+        let data;
+        let countElement = document.getElementById('count');
+        let checkboxes = document.querySelectorAll('.checkbox-item input');
+    
+        fetch(url)
+            .then(response => response.json())
+            .then(orderData => {
+                data = orderData;
+                console.log(data)
+                updateTable(data);
+            })
+            .catch(error => console.log("Fetching error", error));
+    
+        function updateTable(filteredData) {
+            table.innerHTML = '';
+    
+            let mainHead = document.createElement('tr');
+            mainHead.innerHTML = `<th>Id</th>
+                <th>Customers</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Status</th>`;
+            table.appendChild(mainHead);
+
+            for (let i = 0; i < filteredData.length; i++) {
+                let tableRow = document.createElement('tr');
+                let tabledata1 = document.createElement('td');
+                tabledata1.innerHTML = filteredData[i].id;
+                let tabledata2 = document.createElement('td');
+                tabledata2.innerHTML = filteredData[i].customerName;
+                let tabledata3 = document.createElement('td');
+                tabledata3.innerHTML = filteredData[i].orderDate;
+                let tabledata4 = document.createElement('td');
+                tabledata4.innerHTML = filteredData[i].amount;
+                let tabledata5 = document.createElement('td');
+                tabledata5.innerHTML = filteredData[i].orderStatus;
+    
+                tableRow.appendChild(tabledata1);
+                tableRow.appendChild(tabledata2);
+                tableRow.appendChild(tabledata3);
+                tableRow.appendChild(tabledata4);
+                tableRow.appendChild(tabledata5);
+    
+                table.appendChild(tableRow);
+            }
+    
+            updateCount(filteredData.length);
+        }
+
+    function filter() {
+      let selectedStatuses = [];
+
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                selectedStatuses.push(checkbox.id);
+        }
+        });
+
+    if (selectedStatuses.length === 0) {
+        updateTable(data);
+        return;
+    }
+
+    let filteredData = data.filter((order) => selectedStatuses.includes(order.orderStatus.toLowerCase()));
+       updateTable(filteredData);
+   }
+
+   function updateCount(count){
+    countElement.innerHTML = ` ${count}`
+   }
+   checkboxes.forEach((ele)=>{
+    ele.addEventListener('change',function(){
+        filter();
+    })
+   })
+  
+   
+  
+    </script>
+    
+</body>
+</html>
